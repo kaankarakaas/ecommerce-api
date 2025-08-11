@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:13
+    container_name: ecommerce_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ecommerce_api
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ecommerce_network
+
+  # Laravel Application
+  app:
+    image: php:8.2-fpm
+    container_name: ecommerce_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - ecommerce_network
+    depends_on:
+      - postgres
+    command: >
+      sh -c "apt-get update && apt-get install -y git curl libpng-dev libonig-dev libxml2-dev libzip-dev zip unzip libpq-dev netcat-traditional &&
+             docker-php-ext-install pdo pdo_pgsql mbstring exif pcntl bcmath gd zip &&
+             curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&
+             composer install --no-dev --optimize-autoloader --no-interaction --no-scripts &&
+             cp .env.example .env &&
+             php artisan key:generate &&
+             php artisan jwt:secret &&
+             chown -R www-data:www-data /var/www &&
+             chmod -R 755 /var/www/storage &&
+             chmod -R 755 /var/www/bootstrap/cache &&
+             php artisan config:clear &&
+             php artisan clear-compiled &&
+             php artisan package:discover --ansi &&
+             php artisan migrate --force &&
+             php artisan db:seed --force &&
+             php artisan l5-swagger:generate &&
+             php-fpm"
+
+  # Nginx Web Server
+  nginx:
+    image: nginx:alpine
+    container_name: ecommerce_nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - ecommerce_network
+    depends_on:
+      - app
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  ecommerce_network:
+    driver: bridge
