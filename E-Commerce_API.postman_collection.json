@@ -1,27 +1,32 @@
 {
 	"info": {
 		"_postman_id": "ecommerce-api-collection",
-		"name": "E-Commerce API",
-		"description": "Laravel E-Commerce API Collection",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"name": "E-Ticaret API",
+		"description": "Laravel ile geliştirilmiş kapsamlı e-ticaret API'si. JWT kimlik doğrulama ve Swagger dokümantasyonu ile birlikte gelir.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12345678"
 	},
 	"item": [
 		{
-			"name": "Authentication",
+			"name": "🔐 Kimlik Doğrulama",
 			"item": [
 				{
-					"name": "Register",
+					"name": "Kullanıcı Kaydı",
 					"request": {
 						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}"
+							"raw": "{\n    \"name\": \"Test Kullanıcı\",\n    \"email\": \"test@example.com\",\n    \"password\": \"test123456\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/register",
@@ -32,16 +37,39 @@
 								"api",
 								"register"
 							]
-						}
-					}
+						},
+						"description": "Yeni kullanıcı kaydı oluşturur ve JWT token döner."
+					},
+					"response": []
 				},
 				{
-					"name": "Login",
+					"name": "Kullanıcı Girişi",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.data && response.data.token) {",
+									"        pm.collectionVariables.set('token', response.data.token);",
+									"        console.log('Token kaydedildi:', response.data.token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
 								"value": "application/json"
 							}
 						],
@@ -58,17 +86,23 @@
 								"api",
 								"login"
 							]
-						}
-					}
+						},
+						"description": "Kullanıcı girişi yapar ve JWT token döner. Token otomatik olarak collection değişkenine kaydedilir."
+					},
+					"response": []
 				},
 				{
-					"name": "Get Profile",
+					"name": "Kullanıcı Profili Görüntüleme",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
 								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"url": {
@@ -80,26 +114,32 @@
 								"api",
 								"profile"
 							]
-						}
-					}
+						},
+						"description": "Giriş yapmış kullanıcının profil bilgilerini getirir."
+					},
+					"response": []
 				},
 				{
-					"name": "Update Profile",
+					"name": "Kullanıcı Profili Güncelleme",
 					"request": {
 						"method": "PUT",
 						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
 							},
 							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"John Updated\",\n    \"email\": \"john.updated@example.com\"\n}"
+							"raw": "{\n    \"name\": \"Güncellenmiş İsim\",\n    \"email\": \"yeni@email.com\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/profile",
@@ -110,17 +150,23 @@
 								"api",
 								"profile"
 							]
-						}
-					}
+						},
+						"description": "Giriş yapmış kullanıcının profil bilgilerini günceller."
+					},
+					"response": []
 				},
 				{
-					"name": "Logout",
+					"name": "Kullanıcı Çıkışı",
 					"request": {
 						"method": "POST",
 						"header": [
 							{
 								"key": "Authorization",
 								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"url": {
@@ -132,22 +178,29 @@
 								"api",
 								"logout"
 							]
-						}
-					}
+						},
+						"description": "Kullanıcı çıkışı yapar ve JWT token'ı geçersiz kılar."
+					},
+					"response": []
 				}
-			]
+			],
+			"description": "Kullanıcı kimlik doğrulama işlemleri"
 		},
 		{
-			"name": "Categories",
+			"name": "📂 Kategori Yönetimi",
 			"item": [
 				{
-					"name": "Get All Categories",
+					"name": "Tüm Kategorileri Listele",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
 								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"url": {
@@ -159,26 +212,32 @@
 								"api",
 								"categories"
 							]
-						}
-					}
+						},
+						"description": "Tüm kategorileri listeler."
+					},
+					"response": []
 				},
 				{
-					"name": "Create Category (Admin)",
+					"name": "Yeni Kategori Oluştur (Admin)",
 					"request": {
 						"method": "POST",
 						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
 							},
 							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_token}}"
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Sports\",\n    \"description\": \"Sports equipment and accessories\"\n}"
+							"raw": "{\n    \"name\": \"Yeni Kategori\",\n    \"description\": \"Kategori açıklaması\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/categories",
@@ -189,26 +248,32 @@
 								"api",
 								"categories"
 							]
-						}
-					}
+						},
+						"description": "Yeni kategori oluşturur. Sadece admin kullanıcılar erişebilir."
+					},
+					"response": []
 				},
 				{
-					"name": "Update Category (Admin)",
+					"name": "Kategori Güncelle (Admin)",
 					"request": {
 						"method": "PUT",
 						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
 							},
 							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_token}}"
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Electronics Updated\",\n    \"description\": \"Updated electronic devices and gadgets\"\n}"
+							"raw": "{\n    \"name\": \"Güncellenmiş Kategori\",\n    \"description\": \"Güncellenmiş açıklama\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/categories/1",
@@ -220,17 +285,23 @@
 								"categories",
 								"1"
 							]
-						}
-					}
+						},
+						"description": "Kategori bilgilerini günceller. Sadece admin kullanıcılar erişebilir."
+					},
+					"response": []
 				},
 				{
-					"name": "Delete Category (Admin)",
+					"name": "Kategori Sil (Admin)",
 					"request": {
 						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{admin_token}}"
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"url": {
@@ -243,48 +314,33 @@
 								"categories",
 								"1"
 							]
-						}
-					}
+						},
+						"description": "Kategoriyi siler. Sadece admin kullanıcılar erişebilir."
+					},
+					"response": []
 				}
-			]
+			],
+			"description": "Kategori CRUD işlemleri"
 		},
 		{
-			"name": "Products",
+			"name": "🛍️ Ürün Yönetimi",
 			"item": [
 				{
-					"name": "Get All Products",
+					"name": "Ürünleri Listele (Filtreleme ve Sayfalama)",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
 								"value": "Bearer {{token}}"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/api/products",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"products"
-							]
-						}
-					}
-				},
-				{
-					"name": "Get Products with Filters",
-					"request": {
-						"method": "GET",
-						"header": [
+							},
 							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/products?category_id=1&min_price=100&max_price=1000&search=iPhone&page=1&limit=10",
+							"raw": "{{base_url}}/api/products?page=1&limit=20&category_id=1&min_price=10&max_price=100&search=hosting",
 							"host": [
 								"{{base_url}}"
 							],
@@ -294,41 +350,53 @@
 							],
 							"query": [
 								{
-									"key": "category_id",
-									"value": "1"
-								},
-								{
-									"key": "min_price",
-									"value": "100"
-								},
-								{
-									"key": "max_price",
-									"value": "1000"
-								},
-								{
-									"key": "search",
-									"value": "iPhone"
-								},
-								{
 									"key": "page",
-									"value": "1"
+									"value": "1",
+									"description": "Sayfa numarası"
 								},
 								{
 									"key": "limit",
-									"value": "10"
+									"value": "20",
+									"description": "Sayfa başına kayıt sayısı"
+								},
+								{
+									"key": "category_id",
+									"value": "1",
+									"description": "Kategori filtresi"
+								},
+								{
+									"key": "min_price",
+									"value": "10",
+									"description": "Minimum fiyat"
+								},
+								{
+									"key": "max_price",
+									"value": "100",
+									"description": "Maksimum fiyat"
+								},
+								{
+									"key": "search",
+									"value": "hosting",
+									"description": "Ürün adında arama"
 								}
 							]
-						}
-					}
+						},
+						"description": "Ürünleri listeler. Filtreleme ve sayfalama parametreleri desteklenir."
+					},
+					"response": []
 				},
 				{
-					"name": "Get Product by ID",
+					"name": "Tek Ürün Detayı",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
 								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"url": {
@@ -341,26 +409,32 @@
 								"products",
 								"1"
 							]
-						}
-					}
+						},
+						"description": "Belirtilen ID'ye sahip ürünün detaylarını getirir."
+					},
+					"response": []
 				},
 				{
-					"name": "Create Product (Admin)",
+					"name": "Yeni Ürün Ekle (Admin)",
 					"request": {
 						"method": "POST",
 						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
 							},
 							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_token}}"
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"New Product\",\n    \"description\": \"A new product description\",\n    \"price\": 299.99,\n    \"stock_quantity\": 25,\n    \"category_id\": 1\n}"
+							"raw": "{\n    \"name\": \"Yeni Ürün\",\n    \"description\": \"Ürün açıklaması\",\n    \"price\": 99.99,\n    \"stock_quantity\": 50,\n    \"category_id\": 1\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/products",
@@ -371,26 +445,32 @@
 								"api",
 								"products"
 							]
-						}
-					}
+						},
+						"description": "Yeni ürün ekler. Sadece admin kullanıcılar erişebilir."
+					},
+					"response": []
 				},
 				{
-					"name": "Update Product (Admin)",
+					"name": "Ürün Güncelle (Admin)",
 					"request": {
 						"method": "PUT",
 						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
 							},
 							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_token}}"
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Updated Product\",\n    \"description\": \"Updated product description\",\n    \"price\": 399.99,\n    \"stock_quantity\": 30,\n    \"category_id\": 1\n}"
+							"raw": "{\n    \"name\": \"Güncellenmiş Ürün\",\n    \"description\": \"Güncellenmiş açıklama\",\n    \"price\": 89.99,\n    \"stock_quantity\": 40,\n    \"category_id\": 1\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/products/1",
@@ -402,17 +482,23 @@
 								"products",
 								"1"
 							]
-						}
-					}
+						},
+						"description": "Ürün bilgilerini günceller. Sadece admin kullanıcılar erişebilir."
+					},
+					"response": []
 				},
 				{
-					"name": "Delete Product (Admin)",
+					"name": "Ürün Sil (Admin)",
 					"request": {
 						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{admin_token}}"
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"url": {
@@ -425,22 +511,29 @@
 								"products",
 								"1"
 							]
-						}
-					}
+						},
+						"description": "Ürünü siler. Sadece admin kullanıcılar erişebilir."
+					},
+					"response": []
 				}
-			]
+			],
+			"description": "Ürün CRUD işlemleri ve listeleme"
 		},
 		{
-			"name": "Cart",
+			"name": "🛒 Sepet Yönetimi",
 			"item": [
 				{
-					"name": "Get Cart",
+					"name": "Sepeti Görüntüle",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
 								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"url": {
@@ -452,21 +545,27 @@
 								"api",
 								"cart"
 							]
-						}
-					}
+						},
+						"description": "Kullanıcının sepetini görüntüler."
+					},
+					"response": []
 				},
 				{
-					"name": "Add to Cart",
+					"name": "Sepete Ürün Ekle",
 					"request": {
 						"method": "POST",
 						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
 							},
 							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"body": {
@@ -483,21 +582,27 @@
 								"cart",
 								"add"
 							]
-						}
-					}
+						},
+						"description": "Sepete ürün ekler. Stok kontrolü yapılır."
+					},
+					"response": []
 				},
 				{
-					"name": "Update Cart Item",
+					"name": "Sepet Ürün Miktarı Güncelle",
 					"request": {
 						"method": "PUT",
 						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
 							},
 							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"body": {
@@ -514,17 +619,23 @@
 								"cart",
 								"update"
 							]
-						}
-					}
+						},
+						"description": "Sepetteki ürün miktarını günceller."
+					},
+					"response": []
 				},
 				{
-					"name": "Remove from Cart",
+					"name": "Sepetten Ürün Çıkar",
 					"request": {
 						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
 								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"url": {
@@ -538,17 +649,23 @@
 								"remove",
 								"1"
 							]
-						}
-					}
+						},
+						"description": "Sepetten belirtilen ürünü çıkarır."
+					},
+					"response": []
 				},
 				{
-					"name": "Clear Cart",
+					"name": "Sepeti Temizle",
 					"request": {
 						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
 								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"url": {
@@ -561,22 +678,29 @@
 								"cart",
 								"clear"
 							]
-						}
-					}
+						},
+						"description": "Sepeti tamamen temizler."
+					},
+					"response": []
 				}
-			]
+			],
+			"description": "Sepet yönetimi işlemleri"
 		},
 		{
-			"name": "Orders",
+			"name": "📦 Sipariş Yönetimi",
 			"item": [
 				{
-					"name": "Create Order",
+					"name": "Sipariş Oluştur",
 					"request": {
 						"method": "POST",
 						"header": [
 							{
 								"key": "Authorization",
 								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"url": {
@@ -588,17 +712,23 @@
 								"api",
 								"orders"
 							]
-						}
-					}
+						},
+						"description": "Sepetteki ürünlerden sipariş oluşturur. Stok kontrolü yapılır ve stok miktarı güncellenir."
+					},
+					"response": []
 				},
 				{
-					"name": "Get User Orders",
+					"name": "Kullanıcının Siparişlerini Listele",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
 								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"url": {
@@ -610,17 +740,23 @@
 								"api",
 								"orders"
 							]
-						}
-					}
+						},
+						"description": "Giriş yapmış kullanıcının tüm siparişlerini listeler."
+					},
+					"response": []
 				},
 				{
-					"name": "Get Order by ID",
+					"name": "Sipariş Detayı",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
 								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
 							}
 						],
 						"url": {
@@ -633,24 +769,47 @@
 								"orders",
 								"1"
 							]
-						}
-					}
+						},
+						"description": "Belirtilen ID'ye sahip siparişin detaylarını getirir."
+					},
+					"response": []
 				}
-			]
+			],
+			"description": "Sipariş yönetimi işlemleri"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	],
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "http://localhost:8000"
+			"value": "http://localhost:8000",
+			"type": "string",
+			"description": "API base URL"
 		},
 		{
 			"key": "token",
-			"value": "YOUR_JWT_TOKEN_HERE"
-		},
-		{
-			"key": "admin_token",
-			"value": "YOUR_ADMIN_JWT_TOKEN_HERE"
+			"value": "",
+			"type": "string",
+			"description": "JWT token (otomatik olarak login endpoint'inden alınır)"
 		}
 	]
 }
