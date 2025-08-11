@@ -34,7 +34,7 @@ git clone https://github.com/kaankarakaas/ecommerce-api.git
 cd ecommerce-api
 
 # Docker container'larını başlatın
-docker-compose up -d
+docker-compose up
 
 # API'ye erişim
 # http://localhost:8000
