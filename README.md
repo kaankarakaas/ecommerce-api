@@ -934,7 +934,10 @@ php artisan test
 
 Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakın.
 
-
 ## Bonus
 
 Tarayıcınızdan `http://localhost:8000` adresine giderek Konami Asteroids oyununu oynayabilirsiniz. :)
+
+## API Dökümanı Ekran Görüntüsü
+
+<img src="swagger-screenshot.png" alt="Döküman Ekran Görüntüsü" width="500">
